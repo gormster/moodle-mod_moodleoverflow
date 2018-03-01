@@ -202,8 +202,10 @@ if (!empty($moodleoverflow)) {
     $modulecontext = context_module::instance($cm->id);
     $coursecontext = context_course::instance($course->id);
 
+    $iscomment = $parent->parent != 0;
+
     // Check whether the user is allowed to post.
-    if (!moodleoverflow_user_can_post($moodleoverflow, $USER, $cm, $course, $modulecontext)) {
+    if (!moodleoverflow_user_can_post($moodleoverflow, $USER, $cm, $course, $modulecontext, $iscomment)) {
 
         // Give the user the chance to enroll himself to the course.
         if (!isguestuser() AND !is_enrolled($coursecontext)) {

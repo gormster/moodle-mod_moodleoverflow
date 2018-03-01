@@ -699,10 +699,11 @@ function moodleoverflow_go_back_to($default) {
  * @param object         $cm
  * @param stdClass       $course         The course object
  * @param context_module $modulecontext  The modules context
+ * @param bool           $iscomment      True if the post is a comment
  *
  * @return bool Whether the user can reply
  */
-function moodleoverflow_user_can_post($moodleoverflow, $user = null, $cm = null, $course = null, $modulecontext = null) {
+function moodleoverflow_user_can_post($moodleoverflow, $user = null, $cm = null, $course = null, $modulecontext = null, $iscomment = false) {
     global $USER, $DB;
 
     // If not user is submitted, use the current one.
@@ -740,8 +741,14 @@ function moodleoverflow_user_can_post($moodleoverflow, $user = null, $cm = null,
     }
 
     // Check the users capability.
-    if (has_capability('mod/moodleoverflow:replypost', $modulecontext, $user->id)) {
-        return true;
+    if ($iscomment) {
+        if (has_capability('mod/moodleoverflow:comment', $modulecontext, $user->id)) {
+            return true;
+        }
+    } else {
+        if (has_capability('mod/moodleoverflow:replypost', $modulecontext, $user->id)) {
+            return true;
+        }
     }
 
     // The user does not have the capability.
@@ -758,7 +765,7 @@ function moodleoverflow_user_can_post($moodleoverflow, $user = null, $cm = null,
  * @param stdClass $post           The post object
  * @param boolean  $canreply       Whether the user can reply in this discussion
  */
-function moodleoverflow_print_discussion($course, $cm, $moodleoverflow, $discussion, $post, $canreply) {
+function moodleoverflow_print_discussion($course, $cm, $moodleoverflow, $discussion, $post, $canreply, $cancomment) {
     global $USER, $OUTPUT;
 
     // Check if the current is the starter of the discussion.
@@ -820,7 +827,7 @@ function moodleoverflow_print_discussion($course, $cm, $moodleoverflow, $discuss
         $ownpost, $canreply, false, '', '', $postread, true, $istracked, 0);
 
     // Print the other posts.
-    echo moodleoverflow_print_posts_nested($course, $cm, $moodleoverflow, $discussion, $post, $canreply, $istracked, $posts);
+    echo moodleoverflow_print_posts_nested($course, $cm, $moodleoverflow, $discussion, $post, $cancomment, $istracked, $posts);
 }
 
 /**

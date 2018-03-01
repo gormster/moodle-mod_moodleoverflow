@@ -143,6 +143,7 @@ if ((!is_guest($modulecontext, $USER) AND isloggedin() AND $canviewdiscussion)) 
 
 // Check if the user can reply in this discussion.
 $canreply = moodleoverflow_user_can_post($moodleoverflow, $USER, $cm, $course, $modulecontext);
+$cancomment = moodleoverflow_user_can_post($moodleoverflow, $USER, $cm, $course, $modulecontext, true);
 
 // Link to the selfenrollment if not allowed.
 if (!$canreply) {
@@ -153,6 +154,6 @@ if (!$canreply) {
 
 echo "<br><br>";
 
-moodleoverflow_print_discussion($course, $cm, $moodleoverflow, $discussion, $post, $canreply);
+moodleoverflow_print_discussion($course, $cm, $moodleoverflow, $discussion, $post, $canreply, $cancomment);
 
 echo $OUTPUT->footer();
